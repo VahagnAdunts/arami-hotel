@@ -1,0 +1,118 @@
+{% extends "core/base.html" %}
+
+{% block title %}Arami Hotel | Yerevan{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative h-screen bg-cover bg-center" style="background-image: url('/media/hero.jpg');">
+  <div class="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center text-center text-white px-4">
+    <h1 class="text-5xl font-bold mb-4">Arami Hotel</h1>
+    <p class="text-lg mb-8 max-w-xl">Boutique comfort in the heart of Yerevan. Book your stay directly with the best rates.</p>
+
+    <!-- Search Bar -->
+    <form action="{% url 'check_availability' %}" method="get" class="bg-white bg-opacity-90 rounded-lg p-6 w-full max-w-2xl text-gray-800">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Check-in</label>
+          <input type="date" name="check_in" class="w-full border border-gray-300 rounded px-3 py-2" value="{{ request.GET.check_in }}" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Check-out</label>
+          <input type="date" name="check_out" class="w-full border border-gray-300 rounded px-3 py-2" value="{{ request.GET.check_out }}" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Guests</label>
+          <input type="number" name="guests" class="w-full border border-gray-300 rounded px-3 py-2" min="1" value="{{ request.GET.guests|default:1 }}" required>
+        </div>
+        <div class="flex items-end">
+          <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Rooms Section -->
+<section id="rooms" class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12">Available Rooms</h2>
+    {% if rooms|length == 2 %}
+      <div class="flex justify-center gap-8 flex-wrap">
+        {% for room in rooms %}
+          <a href="{% url 'room_detail' room.type %}?check_in={{ request.GET.check_in }}&check_out={{ request.GET.check_out }}&guests={{ request.GET.guests }}"
+            class="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition transform hover:scale-[1.01] max-w-sm w-full">
+            {% if room.image %}
+              <img src="{{ room.image.url }}" alt="{{ room.get_type_display }}" class="w-full h-56 object-cover">
+            {% else %}
+              <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+            {% endif %}
+            <div class="p-5">
+              <h3 class="text-xl font-semibold mb-2">{{ room.get_type_display }}</h3>
+              <p class="text-gray-600 text-sm mb-2">{{ room.description|truncatewords:25 }}</p>
+              <div class="text-sm text-gray-500 mb-1">Max guests: {{ room.capacity }}</div>
+              <div class="flex justify-between items-center mt-4">
+                <div class="text-indigo-600 font-bold">
+                  {% if room.type == 'budget' %}
+                    From 17000 AMD / night
+                  {% elif room.type == 'superior' %}
+                    From 21000 AMD / night
+                  {% endif %}
+                </div>
+                <div class="text-indigo-600 text-sm font-semibold">Book Now →</div>
+              </div>
+            </div>
+          </a>  
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {% for room in rooms %}
+          <a href="{% url 'room_detail' room.type %}?check_in={{ request.GET.check_in }}&check_out={{ request.GET.check_out }}&guests={{ request.GET.guests }}"
+            class="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition transform hover:scale-[1.01]">
+            {% if room.image %}
+              <img src="{{ room.image.url }}" alt="{{ room.get_type_display }}" class="w-full h-56 object-cover">
+            {% else %}
+              <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+            {% endif %}
+            <div class="p-5">
+              <h3 class="text-xl font-semibold mb-2">{{ room.get_type_display }}</h3>
+              <p class="text-gray-600 text-sm mb-2">{{ room.description|truncatewords:25 }}</p>
+              <div class="text-sm text-gray-500 mb-1">Max guests: {{ room.capacity }}</div>
+              <div class="flex justify-between items-center mt-4">
+                <div class="text-indigo-600 font-bold">
+                  {% if room.type == 'budget' %}
+                    From 17000 AMD / night
+                  {% elif room.type == 'superior' %}
+                    From 21000 AMD / night
+                  {% endif %}
+                </div>
+                <div class="text-indigo-600 text-sm font-semibold">Book Now →</div>
+              </div>
+            </div>
+          </a>  
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if rooms|length == 0 %}
+      <p class="text-center text-red-500 mt-10 text-lg">No rooms available for your selected dates and guest count.</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- About / Location -->
+<section class="py-16 bg-white border-t border-b">
+  <div class="max-w-5xl mx-auto px-4 text-center">
+    <h2 class="text-3xl font-bold mb-6">Why Stay With Us?</h2>
+    <p class="text-gray-600 text-lg leading-relaxed max-w-3xl mx-auto">
+      Located in one of the most walkable neighborhoods of Yerevan, Arami Hotel offers you comfortable rooms, warm hospitality, and modern amenities — perfect for both leisure and business travelers.
+    </p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-16 bg-indigo-600 text-white text-center">
+  <h2 class="text-3xl font-bold mb-4">Ready to book your stay?</h2>
+  <p class="text-lg mb-6">Check available rooms and reserve directly with the best price guarantee.</p>
+  <a href="#rooms" class="bg-white text-indigo-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Check Rooms</a>
+</section>
+{% endblock %}

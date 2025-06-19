@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% block title %}Our Rooms – Arami Hotel{% endblock %}
+{% block content %}
+<section class="py-16 bg-gray-50">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <h1 class="text-4xl font-bold mb-6">Our Room Types</h1>
+  </div>
+  <div class="max-w-6xl mx-auto px-4 grid gap-8 md:grid-cols-2">
+    {% for room in rooms %}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-lg">
+      {% if room.image %}
+      <img src="{{ room.image.url }}" class="w-full h-64 object-cover">
+      {% endif %}
+      <div class="p-6">
+        <h2 class="text-2xl font-semibold mb-2">{{ room.get_type_display }}</h2>
+        <p class="text-gray-600 mb-4">{{ room.description }}</p>
+        <ul class="text-sm text-gray-700 space-y-1 mb-4">
+          {% if room.type == 'budget' %}
+            <li>Capacity: up to 2 guests</li>
+          {% else %}
+            <li>Capacity: up to 4 guests</li>
+          {% endif %}
+          <li>Price per night: <strong>{{ room.price_per_night }} AMD</strong></li>
+          <li>Fully air-conditioned • Private bathroom • Free Wi‑Fi</li>
+          <li>Tea & Coffee facilities • Mini‑bar • Hairdryer</li>
+        </ul>
+        <a href="{% url 'availability' %}?check_in={{ today }}&check_out={{ tomorrow }}&guests={{ room.capacity }}"
+           class="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+          Check Availability
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

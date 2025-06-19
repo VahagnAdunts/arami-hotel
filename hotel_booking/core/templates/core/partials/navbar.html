@@ -1,0 +1,10 @@
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <a href="/" class="text-2xl font-bold text-indigo-600">Arami Hotel</a>
+    <nav class="space-x-6 text-sm font-medium">
+      <a href="/" class="{% if request.path == '/' %}text-indigo-600{% else %}text-gray-600 hover:text-indigo-600{% endif %}">Home</a>
+      <a href="/#rooms" class="text-gray-600 hover:text-indigo-600">Rooms</a>
+      <a href="#contact" class="text-gray-600 hover:text-indigo-600">Contact</a>
+    </nav>
+  </div>
+</header>

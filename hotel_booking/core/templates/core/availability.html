@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+
+{% block title %}Available Rooms - Arami Hotel{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4">
+  <h1 class="text-3xl font-bold text-center mb-8">Available Rooms</h1>
+
+  {% if rooms %}
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {% for room in rooms %}
+    <a href="{% url 'room_detail' room.type %}?check_in={{ request.GET.check_in }}&check_out={{ request.GET.check_out }}&guests={{ request.GET.guests }}"
+      class="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition transform hover:scale-[1.01]">
+      {% if room.image %}
+        <img src="{{ room.image.url }}" alt="{{ room.get_type_display }}" class="w-full h-56 object-cover">
+      {% else %}
+        <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+      {% endif %}
+      <div class="p-5">
+        <h3 class="text-xl font-semibold mb-2">{{ room.get_type_display }}</h3>
+        <p class="text-gray-600 text-sm mb-2">{{ room.description|truncatewords:25 }}</p>
+        <div class="text-sm text-gray-500 mb-1">Max guests: {{ room.capacity }}</div>
+        <div class="flex justify-between items-center mt-4">
+          <div class="text-indigo-600 font-bold">{{ room.price_per_night }} AMD / night</div>
+          <div class="text-indigo-600 text-sm font-semibold">Book Now →</div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="text-center text-red-500 mt-8 text-lg">No rooms available for your selected dates and guest count.</p>
+  {% endif %}
+
+  <div class="text-center mt-10">
+    <a href="/" class="text-indigo-600 hover:underline">Back to homepage</a>
+  </div>
+</div>
+{% endblock %}

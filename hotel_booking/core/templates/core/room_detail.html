@@ -1,0 +1,242 @@
+{% extends "core/base.html" %}
+{% block title %}{{ room.get_type_display }} – Arami Hotel{% endblock %}
+{% block content %}
+
+<section class="py-16 bg-gray-50">
+  <div class="max-w-5xl mx-auto px-4">
+
+    <!-- Room Title -->
+    <div class="text-center mb-12">
+      <h1 class="text-5xl font-extrabold text-gray-800 mb-2">{{ room.get_type_display }}</h1>
+      <p class="text-lg text-gray-500">A stylish and comfortable stay in the heart of Yerevan</p>
+    </div>
+
+    <!-- Gallery -->
+    <div class="grid grid-cols-3 gap-2 h-[300px] md:h-[400px] mb-6 relative group">
+      <div class="col-span-2 row-span-2 overflow-hidden rounded-lg">
+        {% if room_photos|length > 0 %}
+          <img src="{{ room_photos.0.image.url }}" class="object-cover w-full h-full cursor-pointer" onclick="openLightbox('{{ room_photos.0.image.url }}')">
+        {% else %}
+          <div class="bg-gray-200 h-full flex items-center justify-center text-gray-500">No Image</div>
+        {% endif %}
+      </div>
+      {% for photo in room_photos|slice:"1:6" %}
+        <div class="overflow-hidden rounded-lg relative">
+          <img src="{{ photo.image.url }}" class="object-cover w-full h-full cursor-pointer" onclick="openLightbox('{{ photo.image.url }}')">
+          {% if forloop.counter == 5 and room_photos|length > 6 %}
+            <button onclick="openGalleryModal()" class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center text-white text-lg font-semibold rounded-lg hover:bg-opacity-70 transition">
+              +{{ room_photos|length|add:"-6" }} more
+            </button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Fullscreen modal -->
+    <div id="galleryModal" class="fixed inset-0 z-50 bg-black bg-opacity-90 hidden flex-col items-center justify-center overflow-auto">
+      <div class="relative max-w-5xl w-full p-4">
+        <div class="flex justify-end">
+          <button onclick="closeGalleryModal()" class="text-white text-3xl hover:text-gray-300">&times;</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+          {% for photo in room_photos %}
+            <img src="{{ photo.image.url }}" class="w-full h-64 object-cover rounded shadow cursor-pointer" onclick="openLightbox('{{ photo.image.url }}')">
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox viewer -->
+    <div id="lightboxViewer" class="fixed inset-0 z-50 bg-black bg-opacity-90 hidden items-center justify-center transition-opacity">
+      <div class="relative w-full max-w-4xl p-4 flex justify-center">
+        <button onclick="closeLightbox()" class="absolute top-4 right-6 text-white text-4xl font-bold hover:text-gray-300 z-50">&times;</button>
+        <img id="lightboxImage" src="" class="max-h-[90vh] object-contain rounded shadow-lg border border-white">
+      </div>
+    </div>
+
+    <script>
+      function openGalleryModal() {
+        document.getElementById('galleryModal').classList.remove('hidden');
+      }
+      function closeGalleryModal() {
+        document.getElementById('galleryModal').classList.add('hidden');
+      }
+      function openLightbox(url) {
+        document.getElementById('lightboxImage').src = url;
+        document.getElementById('lightboxViewer').classList.remove('hidden');
+      }
+      function closeLightbox() {
+        document.getElementById('lightboxViewer').classList.add('hidden');
+        document.getElementById('lightboxImage').src = "";
+      }
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLightbox();
+      });
+      document.getElementById('lightboxViewer').addEventListener('click', function (e) {
+        if (e.target.id === 'lightboxViewer') closeLightbox();
+      });
+    </script>
+
+    <!-- Description -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-10 border border-gray-100">
+      <p class="text-gray-700 mb-4 leading-relaxed text-lg">{{ room.description }}</p>
+      <ul class="text-gray-600 space-y-2 text-sm">
+        <li><strong>Capacity:</strong> up to {{ room.capacity }} guests</li>
+        <li class="text-green-600 text-sm mt-1">✓ Best rate guaranteed when booking directly</li>
+      </ul>
+    </div>
+
+    <!-- If no dates selected yet -->
+    {% if not check_in or not check_out %}
+      <div class="bg-white rounded-xl shadow-md p-6 mb-10 border border-gray-100">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Check Availability</h2>
+        <form method="get" class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <label class="block text-gray-700 mb-1">Check-in</label>
+            <input type="date" name="check_in" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-1">Check-out</label>
+            <input type="date" name="check_out" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-gray-700 mb-1">Guests</label>
+            <input type="number" name="guests" min="1" value="1" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <button type="submit" class="md:col-span-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
+            Check Availability & Price
+          </button>
+        </form>
+      </div>
+    {% endif %}
+
+    <!-- If dates are selected, show booking and price card -->
+    <!-- Booking & Price Card -->
+{% if check_in and check_out %}
+  <div class="bg-white shadow-xl rounded-xl border border-indigo-200 p-6 mb-12">
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">Your Booking Summary</h2>
+      <ul class="text-gray-700 text-sm space-y-1">
+        <li><strong>Check-in:</strong> {{ check_in }}</li>
+        <li><strong>Check-out:</strong> {{ check_out }}</li>
+        <li><strong>Guests:</strong> {{ guests }}</li>
+        <li><strong>Price per night:</strong> {{ price_per_night }} AMD</li>
+        <li class="text-xl mt-2"><strong>Total:</strong> <span class="text-indigo-600 font-bold">{{ total_price }} AMD</span></li>
+      </ul>
+    </div>
+
+    {% if message %}
+      <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">{{ message }}</div>
+    {% endif %}
+
+    <form method="post" class="grid gap-4 text-sm">
+      {% csrf_token %}
+      <input type="hidden" name="check_in" value="{{ check_in }}">
+      <input type="hidden" name="check_out" value="{{ check_out }}">
+      <input type="hidden" name="guests" value="{{ guests }}">
+      <div>
+        <label class="block text-gray-700 mb-1">Full Name</label>
+        <input type="text" name="full_name" class="w-full border px-3 py-2 rounded" required>
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">Email</label>
+        <input type="email" name="email" class="w-full border px-3 py-2 rounded" required>
+      </div>
+      <div>
+        <label class="block text-gray-700 mb-1">Phone</label>
+        <input type="text" name="phone" class="w-full border px-3 py-2 rounded" required>
+      </div>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
+        Confirm Booking
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+    <!-- Room Features -->
+    <div class="mb-10">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-1 border-gray-200 tracking-tight">Room Features</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-700">
+        <li class="flex items-center gap-2"><i data-lucide="tv" class="w-4 h-4 text-indigo-600"></i> Flat‑screen TV</li>
+        <li class="flex items-center gap-2"><i data-lucide="coffee" class="w-4 h-4 text-indigo-600"></i> Tea/coffee maker</li>
+        <li class="flex items-center gap-2"><i data-lucide="cup-soda" class="w-4 h-4 text-indigo-600"></i> Electric kettle & minibar</li>
+        <li class="flex items-center gap-2"><i data-lucide="scissors" class="w-4 h-4 text-indigo-600"></i> Hairdryer & free toiletries</li>
+        <li class="flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-indigo-600"></i> Slippers, ironing facilities</li>
+        <li class="flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4 text-indigo-600"></i> Desk & wardrobe</li>
+        <li class="flex items-center gap-2"><i data-lucide="shower-head" class="w-4 h-4 text-indigo-600"></i> Private bathroom with shower</li>
+        <li class="flex items-center gap-2"><i data-lucide="bed-double" class="w-4 h-4 text-indigo-600"></i> Daily housekeeping</li>
+      </ul>
+    </div>
+
+    <!-- Hotel Services -->
+    <div class="mb-10">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-1 border-gray-200 tracking-tight">Hotel Services</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-700">
+        <li class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-indigo-600"></i> 24‑hour front desk</li>
+        <li class="flex items-center gap-2"><i data-lucide="leaf" class="w-4 h-4 text-indigo-600"></i> Garden & relaxation area</li>
+        <li class="flex items-center gap-2"><i data-lucide="car" class="w-4 h-4 text-indigo-600"></i> Airport shuttle (paid)</li>
+        <li class="flex items-center gap-2"><i data-lucide="coffee" class="w-4 h-4 text-indigo-600"></i> Buffet breakfast (optional)</li>
+        <li class="flex items-center gap-2"><i data-lucide="parking-circle" class="w-4 h-4 text-indigo-600"></i> Paid private parking</li>
+        <li class="flex items-center gap-2"><i data-lucide="languages" class="w-4 h-4 text-indigo-600"></i> English, Russian, French</li>
+      </ul>
+    </div>
+
+    <!-- Policies -->
+    <div class="mb-10">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-1 border-gray-200 tracking-tight">Policies</h2>
+      <ul class="text-gray-700 space-y-2">
+        <li class="flex items-center gap-2"><i data-lucide="calendar-check-2" class="w-4 h-4 text-indigo-600"></i> Check-in from 14:00 · Check-out by 12:00</li>
+        <li class="flex items-center gap-2"><i data-lucide="dog" class="w-4 h-4 text-indigo-600"></i> Pets allowed on request (charges may apply)</li>
+        <li class="flex items-center gap-2"><i data-lucide="x" class="w-4 h-4 text-indigo-600"></i> Smoking not allowed</li>
+        <li class="flex items-center gap-2"><i data-lucide="badge-check" class="w-4 h-4 text-indigo-600"></i> ID required at check-in</li>
+      </ul>
+    </div>
+
+    <!-- Map -->
+    <div class="mb-10">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-1 border-gray-200 tracking-tight">Our Location</h2>
+      <p class="text-gray-600 mb-4">Located in central Yerevan, just minutes from Republic Square, Opera House, and the Cascade.</p>
+      <div class="w-full aspect-video rounded-lg overflow-hidden shadow">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2865.5117275342313!2d44.50356281133337!3d40.185054271358844!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x406abd02d76586ff%3A0xaff1f5927ca6cc0e!2sArami%20Hotel%20by%20Downtown!5e1!3m2!1sen!2sam!4v1750092697409!5m2!1sen!2sam"
+          width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+
+    {% if message %}
+      <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">{{ message }}</div>
+    {% endif %}
+
+    <!-- Booking Form -->
+    {% if check_in and check_out %}
+      <div class="bg-white shadow-xl rounded-xl p-6 mt-12 border border-gray-100">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Book this Room</h2>
+        <form method="post" class="grid gap-4 text-sm">
+          {% csrf_token %}
+          <input type="hidden" name="check_in" value="{{ check_in }}">
+          <input type="hidden" name="check_out" value="{{ check_out }}">
+          <input type="hidden" name="guests" value="{{ guests }}">
+          <div>
+            <label class="block text-gray-700 mb-1">Full Name</label>
+            <input type="text" name="full_name" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-1">Email</label>
+            <input type="email" name="email" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-1">Phone</label>
+            <input type="text" name="phone" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
+            Confirm Booking
+          </button>
+        </form>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
