@@ -29,6 +29,21 @@
         </div>
       </div>
     </form>
+    <script>
+      const checkinInput = document.querySelector('input[name="check_in"]');
+      const checkoutInput = document.querySelector('input[name="check_out"]');
+      const guestsInput = document.querySelector('input[name="guests"]');
+      const form = document.querySelector('form');
+
+      function trySubmitForm() {
+        if (checkinInput.value && checkoutInput.value && guestsInput.value) {
+          form.submit();
+        }
+      }
+
+      checkinInput.addEventListener('change', trySubmitForm);
+      checkoutInput.addEventListener('change', trySubmitForm);
+    </script>
   </div>
 </section>
 
