@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-lx2i#oi&-rl+n&+_1tvt13^m)^@0z*weot7idr1=x8$3!+(^lt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1', 'aramihotel.am', 'www.aramihotel.am']
 
 
 # Application definition
