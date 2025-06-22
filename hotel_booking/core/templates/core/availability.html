@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load custom_filters %}
 
 {% block title %}Available Rooms - Arami Hotel{% endblock %}
 
@@ -21,7 +22,13 @@
         <p class="text-gray-600 text-sm mb-2">{{ room.description|truncatewords:25 }}</p>
         <div class="text-sm text-gray-500 mb-1">Max guests: {{ room.capacity }}</div>
         <div class="flex justify-between items-center mt-4">
-          <div class="text-indigo-600 font-bold">{{ room.price_per_night }} AMD / night</div>
+          <div class="text-indigo-600 font-bold">
+            {% if room_prices and room.id in room_prices %}
+              {{ room_prices|get_item:room.id }} AMD total
+            {% else %}
+              {{ room.price_per_night }} AMD / night
+            {% endif %}
+          </div>
           <div class="text-indigo-600 text-sm font-semibold">Book Now →</div>
         </div>
       </div>
