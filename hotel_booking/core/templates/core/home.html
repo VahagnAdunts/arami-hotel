@@ -115,4 +115,32 @@
   <p class="text-lg mb-6">Check available rooms and reserve directly with the best price guarantee.</p>
   <a href="#rooms" class="bg-white text-indigo-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Check Rooms</a>
 </section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "Arami Hotel",
+  "image": [
+    "https://aramihotel.am/static/arami_logo.png"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Arami 86",
+    "addressLocality": "Yerevan",
+    "addressCountry": "Armenia"
+  },
+  "telephone": "+374 44 999984",
+  "url": "https://aramihotel.am/",
+  "priceRange": "17000-21000 AMD",
+  "amenityFeature": [
+    {"@type": "LocationFeatureSpecification", "name": "Free WiFi", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "Air Conditioning", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "Parking", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "Private Bathroom", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "Flat-screen TV", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "Coffee/Tea Maker", "value": true}
+  ]
+}
+</script>
 {% endblock %}

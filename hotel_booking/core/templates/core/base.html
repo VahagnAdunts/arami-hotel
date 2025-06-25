@@ -5,6 +5,22 @@
   <meta charset="UTF-8">
   <title>{% block title %}Arami Hotel{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_description %}Welcome to Arami Hotel in Yerevan. Book comfortable rooms with modern amenities and enjoy Armenian hospitality.{% endblock %}">
+  <meta name="keywords" content="{% block meta_keywords %}hotel, yerevan, arami hotel, armenia, rooms, booking, hospitality, travel, accommodation{% endblock %}">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="{% block og_title %}{{ block.super }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Welcome to Arami Hotel in Yerevan. Book comfortable rooms with modern amenities and enjoy Armenian hospitality.{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{% static 'arami_logo.png' %}{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}https://aramihotel.am{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}{{ block.super }}{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}Welcome to Arami Hotel in Yerevan. Book comfortable rooms with modern amenities and enjoy Armenian hospitality.{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}{% static 'arami_logo.png' %}{% endblock %}">
+
   <link rel="icon" type="image/png" href="{% static 'arami_logo_n.png' %}">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">

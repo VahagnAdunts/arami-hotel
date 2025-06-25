@@ -15,14 +15,14 @@
     <div class="grid grid-cols-3 gap-2 h-[300px] md:h-[400px] mb-6 relative group">
       <div class="col-span-2 row-span-2 overflow-hidden rounded-lg">
         {% if room_photos|length > 0 %}
-          <img src="{{ room_photos.0.image.url }}" class="object-cover w-full h-full cursor-pointer" onclick="openLightbox('{{ room_photos.0.image.url }}')">
+          <img src="{{ room_photos.0.image.url }}" alt="{{ room.get_type_display }} main photo at Arami Hotel in Yerevan" class="object-cover w-full h-full cursor-pointer" onclick="openLightbox('{{ room_photos.0.image.url }}')" loading="lazy">
         {% else %}
           <div class="bg-gray-200 h-full flex items-center justify-center text-gray-500">No Image</div>
         {% endif %}
       </div>
       {% for photo in room_photos|slice:"1:6" %}
         <div class="overflow-hidden rounded-lg relative">
-          <img src="{{ photo.image.url }}" class="object-cover w-full h-full cursor-pointer" onclick="openLightbox('{{ photo.image.url }}')">
+          <img src="{{ photo.image.url }}" alt="{{ room.get_type_display }} gallery photo at Arami Hotel in Yerevan" class="object-cover w-full h-full cursor-pointer" onclick="openLightbox('{{ photo.image.url }}')" loading="lazy">
           {% if forloop.counter == 5 and room_photos|length > 6 %}
             <button onclick="openGalleryModal()" class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center text-white text-lg font-semibold rounded-lg hover:bg-opacity-70 transition">
               +{{ room_photos|length|add:"-6" }} more
@@ -40,7 +40,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {% for photo in room_photos %}
-            <img src="{{ photo.image.url }}" class="w-full h-64 object-cover rounded shadow cursor-pointer" onclick="openLightbox('{{ photo.image.url }}')">
+            <img src="{{ photo.image.url }}" alt="{{ room.get_type_display }} gallery photo at Arami Hotel in Yerevan" class="w-full h-64 object-cover rounded shadow cursor-pointer" onclick="openLightbox('{{ photo.image.url }}')" loading="lazy">
           {% endfor %}
         </div>
       </div>

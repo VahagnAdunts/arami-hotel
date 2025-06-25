@@ -13,7 +13,7 @@
     <a href="{% url 'room_detail' room.type %}?check_in={{ request.GET.check_in }}&check_out={{ request.GET.check_out }}&guests={{ request.GET.guests }}"
       class="block bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition transform hover:scale-[1.01]">
       {% if room.image %}
-        <img src="{{ room.image.url }}" alt="{{ room.get_type_display }}" class="w-full h-56 object-cover">
+        <img src="{{ room.image.url }}" alt="{{ room.get_type_display }} at Arami Hotel in Yerevan" class="w-full h-56 object-cover" loading="lazy">
       {% else %}
         <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
       {% endif %}

@@ -215,7 +215,7 @@ def room_detail(request, room_type):
         ).count()
 
         if overlapping >= room.total_count:
-            message = "❌ Sorry, this room is not available for the selected dates."
+            message = "Sorry, this room is no longer available for the selected dates."
         else:
             Booking.objects.create(
                 room=room,
@@ -239,9 +239,10 @@ def room_detail(request, room_type):
     return render(request, 'core/room_detail.html', {
         'room': room,
         'room_photos': room_photos,
-        'check_in': check_in_str,
-        'check_out': check_out_str,
-        'guests': request.GET.get('guests') or 1,
+        'message': message,
         'total_price': total_price,
-        'message': message
+        'check_in': request.GET.get('check_in'),
+        'check_out': request.GET.get('check_out'),
+        'guests': request.GET.get('guests') or 1,
     })
+
